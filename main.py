@@ -18,12 +18,21 @@ def extract_drawing(img, limit, strict=True):
     # turn all pixels to white where mask == True
     out[mask] = 255
     return out
-    
+
+# determine_limit()
+#  takes an image and attempts to determine a suitible limit for filtering
+#  img -> input image
+def determine_limit(img):
+    img = img[img<85]
+    print(np.mean(img))
+    return np.mean(img)
+
 if __name__ == "__main__":
     # read image from file
     img = io.imread("test.jpg")
+    empty = io.imread("blank.jpg")
     # create filtered image
-    filtered = extract_drawing(img, 47)
+    filtered = extract_drawing(img, determine_limit(empty))
     # show new image
     io.imshow(filtered)
     plt.show()
