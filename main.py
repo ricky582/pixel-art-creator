@@ -20,11 +20,14 @@ def extract_drawing(img, limit, strict=True):
     return out
 
 # determine_limit()
-#  takes an image and attempts to determine a suitible limit for filtering
+#  takes an image of an empty and attempts to determine a suitable limit for filtering
 #  img -> input image
-def determine_limit(img):
-    img = img[img<85]
-    print(np.mean(img))
+#  lined -> for lined paper, results may not be as good
+def determine_limit(img, lined=False):
+    # remove all pixels of a certain level of "whiteness"
+    if lined:
+        img = img[img<85]
+    # return mean of pixels
     return np.mean(img)
 
 if __name__ == "__main__":
@@ -32,7 +35,7 @@ if __name__ == "__main__":
     img = io.imread("test.jpg")
     empty = io.imread("blank.jpg")
     # create filtered image
-    filtered = extract_drawing(img, determine_limit(empty))
+    filtered = extract_drawing(img, determine_limit(empty, True))
     # show new image
     io.imshow(filtered)
     plt.show()
