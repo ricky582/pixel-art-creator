@@ -30,6 +30,11 @@ def determine_limit(img, lined=False):
     # return mean of pixels
     return np.mean(img)
 
+def generate(img, step):
+    out = img.copy()
+    h, b, d = out.shape
+    return out
+
 if __name__ == "__main__":
     # read image from file
     img = io.imread("test.jpg")
