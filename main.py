@@ -30,27 +30,28 @@ def determine_limit(img, lined=False):
     # return mean of pixels
     return np.mean(img)
 
-def generate(img, step):
-    h, b, d = img.shape
-    h = h - h%step
-    b = b - b%step
+# generate()
+#  takes an image and attempts to reduce it to "pixels" of specified size
+#  img -> input image
+#  step -> width of "pixels"
+#  cap -> if the average value of all the RBG channels is above cap, they will be made fully white to avoid noise
+def generate(img, step, cap=150):
+    # get width and height of image
+    h, b, _ = img.shape
+    # trim off excess pixels to get an empty image of (h/step) by (b/step)
+    h -= h%step
+    b -= b%step
     out = np.zeros((h,b,3), dtype=int)
-    for i in range(0, int(h/step)):
-        for j in range(0, int(b/step)):
-            total = np.array([0,0,0], dtype=int)
-            count = 0
-            whites = 0
-            for i1 in range(0, step):
-                for j1 in range(0,step):
-                    p = img[i*step+i1][j*step+j1]
-                    #if p != (255,255,255):
-                    total += p
-                    count += 1
-            new_p = np.floor_divide(total, count)
-            new_p = new_p.astype(int)
-            for i1 in range(0, step):
-                for j1 in range(0,step):
-                    out[i*step+i1][j*step+j1] = new_p               
+    # reshape image to 4D array of "pixels"
+    regions = img[:h, :b].reshape(h//step, step, b//step, step, 3)
+    # calculate mean color of each "pixel"
+    means = np.mean(regions, axis=(1,3))
+    # reshape array back to out size
+    means = means.repeat(step, axis=0).repeat(step, axis=1)
+    # convert array to int
+    out = means.astype(int)
+    # trim off noise from image (faint "pixels")
+    out[(out > cap).any(-1)] = 255
     return out
 
 if __name__ == "__main__":
