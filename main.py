@@ -35,7 +35,8 @@ def determine_limit(img, lined=False):
 #  img -> input image
 #  step -> width of "pixels"
 #  cap -> if the average value of all the RBG channels is above cap, they will be made fully white to avoid noise
-def generate(img, step, cap=150):
+#  binary -> if true, all pixels will either be made black (0,0,0) or white (255,255,255) based on cap
+def generate(img, step, cap=150, binary=False):
     # get width and height of image
     h, b, _ = img.shape
     # trim off excess pixels to get an empty image of (h/step) by (b/step)
@@ -52,11 +53,13 @@ def generate(img, step, cap=150):
     out = means.astype(int)
     # trim off noise from image (faint "pixels")
     out[(out > cap).any(-1)] = 255
+    # make all remaining pixels black (0,0,0) 
+    out[binary and (out < 255).all(-1)] = 0
     return out
 
 if __name__ == "__main__":
     # read image from file
-    img = io.imread("test.jpg")
+    img = io.imread("colour.jpg")
     empty = io.imread("blank.jpg")
     # create filtered image
     filtered = extract_drawing(img, determine_limit(empty, True))
