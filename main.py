@@ -1,6 +1,8 @@
 import numpy as np
 from skimage import io, data
 import matplotlib.pyplot as plt 
+from tkinter import *
+from PIL import Image, ImageTk
 
 # extract_drawing()
 #  takes an image, and filters all pixels lighter than limit (i.e. RGB value > limit), changing them to be white
@@ -65,5 +67,13 @@ if __name__ == "__main__":
     filtered = extract_drawing(img, determine_limit(empty, True))
     out = generate(filtered, 24)
     # show new image
-    io.imshow(out)
-    plt.show()
+    #io.imshow(out)
+    #plt.show()
+    root = Tk()      
+    canvas = Canvas(root, width=1000, height=1000)      
+    canvas.pack()      
+    img = Image.open("test.jpg")
+    img = img.resize((100, 100), Image.ANTIALIAS)
+    img = ImageTk.PhotoImage(img)
+    canvas.create_image(0,0, anchor=NW, image=img)      
+    mainloop()  
