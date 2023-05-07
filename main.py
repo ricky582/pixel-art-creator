@@ -1,7 +1,7 @@
 import numpy as np
 from skimage import io, data
 import matplotlib.pyplot as plt 
-from tkinter import *
+import tkinter as tk
 from PIL import Image, ImageTk
 
 # extract_drawing()
@@ -59,6 +59,12 @@ def generate(img, step, cap=150, binary=False):
     out[binary and (out < 255).all(-1)] = 0
     return out
 
+def _photo_image(image):
+    height, width = image.shape[:2]
+    data = f'P6 {width} {height} 255 '.encode() + image.astype(np.int8).tobytes()
+    #data = data.resize((500, 500), Image.ANTIALIAS)
+    return tk.PhotoImage(width=width, height=height, data=data, format='PPM')
+
 if __name__ == "__main__":
     # read image from file
     img = io.imread("colour.jpg")
@@ -69,11 +75,12 @@ if __name__ == "__main__":
     # show new image
     #io.imshow(out)
     #plt.show()
-    root = Tk()      
-    canvas = Canvas(root, width=1000, height=1000)      
+    root = tk.Tk()      
+    canvas = tk.Canvas(root, width=1920, height=1080)      
     canvas.pack()      
-    img = Image.open("test.jpg")
-    img = img.resize((100, 100), Image.ANTIALIAS)
-    img = ImageTk.PhotoImage(img)
-    canvas.create_image(0,0, anchor=NW, image=img)      
-    mainloop()  
+    img = _photo_image(out)
+    img = img.subsample(3)
+    #img = img.resize((500, 500), Image.ANTIALIAS)
+    #img = ImageTk.PhotoImage(img)
+    canvas.create_image(0,0, anchor=tk.NW, image=img)      
+    tk.mainloop()  
