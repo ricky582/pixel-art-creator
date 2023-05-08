@@ -59,11 +59,15 @@ def generate(img, step, cap=150, binary=False):
     out[binary and (out < 255).all(-1)] = 0
     return out
 
-def _photo_image(image):
+def _photo_image(image, canvas):
     height, width = image.shape[:2]
     data = f'P6 {width} {height} 255 '.encode() + image.astype(np.int8).tobytes()
-    #data = data.resize((500, 500), Image.ANTIALIAS)
-    return tk.PhotoImage(width=width, height=height, data=data, format='PPM')
+    img = tk.PhotoImage(width=width, height=height, data=data, format='PPM')
+    img = img.subsample(4)
+    c_width = canvas.winfo_width()
+    print(c_width)
+    canvas.create_image(c_width//2,height//8, anchor=tk.CENTER, image=img)   
+    return img
 
 if __name__ == "__main__":
     # read image from file
@@ -76,11 +80,9 @@ if __name__ == "__main__":
     #io.imshow(out)
     #plt.show()
     root = tk.Tk()      
-    canvas = tk.Canvas(root, width=1920, height=1080)      
+    canvas = tk.Canvas(root, width=1000, height=1000)      
     canvas.pack()      
-    img = _photo_image(out)
-    img = img.subsample(3)
-    #img = img.resize((500, 500), Image.ANTIALIAS)
-    #img = ImageTk.PhotoImage(img)
-    canvas.create_image(0,0, anchor=tk.NW, image=img)      
+    canvas.update()
+    img = _photo_image(out, canvas)
+   
     tk.mainloop()  
