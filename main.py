@@ -2,6 +2,7 @@ import numpy as np
 from skimage import io, data
 import matplotlib.pyplot as plt 
 import tkinter as tk
+from tkinter import filedialog
 from PIL import Image, ImageTk
 
 # extract_drawing()
@@ -65,9 +66,13 @@ def _photo_image(image, canvas):
     img = tk.PhotoImage(width=width, height=height, data=data, format='PPM')
     img = img.subsample(4)
     c_width = canvas.winfo_width()
-    print(c_width)
     canvas.create_image(c_width//2,height//8, anchor=tk.CENTER, image=img)   
     return img
+
+def upload_file():
+    ftypes = [('Jpg Files', '*.jpg'), ('Jpeg Files', '*.jpeg'), ('Png Files', '*.png')]
+    filename = filedialog.askopenfilename(filetypes=ftypes)
+    return
 
 if __name__ == "__main__":
     # read image from file
@@ -83,6 +88,7 @@ if __name__ == "__main__":
     canvas = tk.Canvas(root, width=1000, height=1000)      
     canvas.pack()      
     canvas.update()
-    img = _photo_image(out, canvas)
-   
+    #img = _photo_image(out, canvas)
+    b1 = tk.Button(canvas, text='Upload File', width=20,command = lambda:upload_file())
+    b1.pack()
     tk.mainloop()  
