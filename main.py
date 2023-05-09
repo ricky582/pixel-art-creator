@@ -66,12 +66,16 @@ def _photo_image(image, canvas):
     img = tk.PhotoImage(width=width, height=height, data=data, format='PPM')
     img = img.subsample(4)
     c_width = canvas.winfo_width()
-    canvas.create_image(c_width//2,height//8, anchor=tk.CENTER, image=img)   
+    #canvas.create_image(20,20, anchor=tk.CENTER, image=img)   
     return img
 
-def upload_file():
+def upload_file(canvas):
     ftypes = [('Jpg Files', '*.jpg'), ('Jpeg Files', '*.jpeg'), ('Png Files', '*.png')]
     filename = filedialog.askopenfilename(filetypes=ftypes)
+    img = io.imread(filename)
+    i = _photo_image(img, canvas)
+    canvas.create_image(20,20, anchor=tk.CENTER, image=i)   
+    canvas.image = i
     return
 
 if __name__ == "__main__":
@@ -84,11 +88,23 @@ if __name__ == "__main__":
     # show new image
     #io.imshow(out)
     #plt.show()
-    root = tk.Tk()      
-    canvas = tk.Canvas(root, width=1000, height=1000)      
-    canvas.pack()      
-    canvas.update()
+    root = tk.Tk()  
+    width= root.winfo_screenwidth()               
+    height= root.winfo_screenheight()  
+    root.state("zoomed")
+    #root.geometry("%dx%d" % (width, height))
+    c_width = 2*width//3
+    c_height = c_width//2
+    canvas = tk.Canvas(root, width=width//3, height=height, bg="red")   
+    canvas1 = tk.Canvas(root, width=2*width//3, height=height, bg="blue")  
+    canvas2 = tk.Canvas(None, width=50, height=50, bg="blue")   
+    canvas.create_window(20,20, anchor=tk.NW, window=canvas2)   
+     
     #img = _photo_image(out, canvas)
-    b1 = tk.Button(canvas, text='Upload File', width=20,command = lambda:upload_file())
-    b1.pack()
+    #b = tk.Button(root, text='Upload File', width=20,command = lambda:[upload_file(canvas), b.pack_forget()])
+    canvas.pack(side='left')  
+    canvas1.pack(side='right')  
+    canvas2.pack()
+    #b.pack()
+    
     tk.mainloop()  
