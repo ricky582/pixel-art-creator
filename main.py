@@ -64,8 +64,11 @@ def _photo_image(image, canvas):
     height, width = image.shape[:2]
     data = f'P6 {width} {height} 255 '.encode() + image.astype(np.int8).tobytes()
     img = tk.PhotoImage(width=width, height=height, data=data, format='PPM')
-    img = img.subsample(4)
-    c_width = canvas.winfo_width()
+    multi = max(height, width)
+    width = canvas.winfo_width()
+    img = img.zoom(width//100)
+    img = img.subsample(multi//100)
+    
     #canvas.create_image(20,20, anchor=tk.CENTER, image=img)   
     return img
 
@@ -74,7 +77,8 @@ def upload_file(canvas):
     filename = filedialog.askopenfilename(filetypes=ftypes)
     img = io.imread(filename)
     i = _photo_image(img, canvas)
-    canvas.create_image(20,20, anchor=tk.CENTER, image=i)   
+    c_width = canvas.winfo_width()
+    canvas.create_image(c_width//2,c_width//2, anchor=tk.CENTER, image=i)   
     canvas.image = i
     return
 
@@ -95,16 +99,22 @@ if __name__ == "__main__":
     #root.geometry("%dx%d" % (width, height))
     c_width = 2*width//3
     c_height = c_width//2
-    canvas = tk.Canvas(root, width=width//3, height=height, bg="red")   
-    canvas1 = tk.Canvas(root, width=2*width//3, height=height, bg="blue")  
-    canvas2 = tk.Canvas(None, width=50, height=50, bg="blue")   
-    canvas.create_window(20,20, anchor=tk.NW, window=canvas2)   
+    canvas = tk.Canvas(root, width=width//3, height=height, highlightthickness=0, bg="red")   
+    canvas1 = tk.Canvas(root, width=2*width//3, height=height, highlightthickness=0, bg="blue")  
+    canvas2 = tk.Canvas(root, width=width//3, height=width//3, highlightthickness=0, bg="black")   
+    canvas2.pack()
+    canvas3 = tk.Canvas(root, width=width//3, height=height-(width//3), highlightthickness=0, bg="yellow")   
+    canvas3.pack()
+    canvas.create_window(0,0, anchor=tk.NW, window=canvas2)   
+    canvas.create_window(0,width//3, anchor=tk.NW, window=canvas3)  
      
     #img = _photo_image(out, canvas)
-    #b = tk.Button(root, text='Upload File', width=20,command = lambda:[upload_file(canvas), b.pack_forget()])
+    b = tk.Button(root, text='Upload File', command = lambda:[upload_file(canvas2)])
+    b.pack()
+    canvas3.create_window(0,0, width=width//3, anchor=tk.NW, window=b) 
     canvas.pack(side='left')  
     canvas1.pack(side='right')  
-    canvas2.pack()
-    #b.pack()
+    
+    
     
     tk.mainloop()  
