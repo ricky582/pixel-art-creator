@@ -65,8 +65,8 @@ def _photo_image(image, canvas):
     data = f'P6 {width} {height} 255 '.encode() + image.astype(np.int8).tobytes()
     img = tk.PhotoImage(width=width, height=height, data=data, format='PPM')
     multi = max(height, width)
-    width = canvas.winfo_width()
-    img = img.zoom(width//100)
+    min_d = min(canvas.winfo_width(), canvas.winfo_height())
+    img = img.zoom(min_d//100)
     img = img.subsample(multi//100)
     
     #canvas.create_image(20,20, anchor=tk.CENTER, image=img)   
@@ -75,12 +75,24 @@ def _photo_image(image, canvas):
 def upload_file(canvas):
     ftypes = [('Jpg Files', '*.jpg'), ('Jpeg Files', '*.jpeg'), ('Png Files', '*.png')]
     filename = filedialog.askopenfilename(filetypes=ftypes)
-    img = io.imread(filename)
-    i = _photo_image(img, canvas)
+    global chosenImg
+    chosenImg = io.imread(filename)
+    i = _photo_image(chosenImg, canvas)
+    c_width = canvas.winfo_width()
+    c_height = canvas.winfo_height()
+    canvas.create_image(c_width//2,c_height//2, anchor=tk.CENTER, image=i)   
+    canvas.image = i
+    return
+
+def show_result(canvas):
+    print(chosenImg)
+    #if (chosenImg):
+    out = generate(chosenImg, 24)
+    i = _photo_image(out, canvas)
     c_width = canvas.winfo_width()
     canvas.create_image(c_width//2,c_width//2, anchor=tk.CENTER, image=i)   
     canvas.image = i
-    return
+    return 
 
 if __name__ == "__main__":
     # read image from file
@@ -111,7 +123,10 @@ if __name__ == "__main__":
     #img = _photo_image(out, canvas)
     b = tk.Button(root, text='Upload File', command = lambda:[upload_file(canvas2)])
     b.pack()
+    b1 = tk.Button(root, text='Upload File', command = lambda:show_result(canvas1))
+    b1.pack()
     canvas3.create_window(0,0, width=width//3, anchor=tk.NW, window=b) 
+    canvas3.create_window(0,50, width=width//3, anchor=tk.NW, window=b1) 
     canvas.pack(side='left')  
     canvas1.pack(side='right')  
     
