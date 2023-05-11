@@ -79,8 +79,7 @@ def upload_file(canvas):
     chosenImg = io.imread(filename)
     i = _photo_image(chosenImg, canvas)
     c_width = canvas.winfo_width()
-    c_height = canvas.winfo_height()
-    canvas.create_image(c_width//2,c_height//2, anchor=tk.CENTER, image=i)   
+    canvas.create_image(c_width//2,c_width//2, anchor=tk.CENTER, image=i)   
     canvas.image = i
     return
 
@@ -90,7 +89,8 @@ def show_result(canvas):
     out = generate(chosenImg, 24)
     i = _photo_image(out, canvas)
     c_width = canvas.winfo_width()
-    canvas.create_image(c_width//2,c_width//2, anchor=tk.CENTER, image=i)   
+    c_height = canvas.winfo_height()
+    canvas.create_image(c_width//2,c_height//2, anchor=tk.CENTER, image=i)   
     canvas.image = i
     return 
 
@@ -123,10 +123,10 @@ if __name__ == "__main__":
     #img = _photo_image(out, canvas)
     b = tk.Button(root, text='Upload File', command = lambda:[upload_file(canvas2)])
     b.pack()
-    b1 = tk.Button(root, text='Upload File', command = lambda:show_result(canvas1))
+    b1 = tk.Button(root, text='Generate Image', command = lambda:show_result(canvas1))
     b1.pack()
     canvas3.create_window(0,0, width=width//3, anchor=tk.NW, window=b) 
-    canvas3.create_window(0,50, width=width//3, anchor=tk.NW, window=b1) 
+    canvas3.create_window(0,25, width=width//3, anchor=tk.NW, window=b1) 
     canvas.pack(side='left')  
     canvas1.pack(side='right')  
     
