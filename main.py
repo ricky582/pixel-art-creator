@@ -5,6 +5,8 @@ import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
 
+chosenImg = None
+
 # extract_drawing()
 #  takes an image, and filters all pixels lighter than limit (i.e. RGB value > limit), changing them to be white
 #  img -> input image
@@ -84,14 +86,14 @@ def upload_file(canvas):
     return
 
 def show_result(canvas):
-    print(chosenImg)
-    #if (chosenImg):
-    out = generate(chosenImg, 24)
-    i = _photo_image(out, canvas)
-    c_width = canvas.winfo_width()
-    c_height = canvas.winfo_height()
-    canvas.create_image(c_width//2,c_height//2, anchor=tk.CENTER, image=i)   
-    canvas.image = i
+    res = 24 if i1.get() == "" else int(i1.get())
+    if chosenImg is not None:
+        out = generate(chosenImg, res)
+        i = _photo_image(out, canvas)
+        c_width = canvas.winfo_width()
+        c_height = canvas.winfo_height()
+        canvas.create_image(c_width//2,c_height//2, anchor=tk.CENTER, image=i)   
+        canvas.image = i
     return 
 
 if __name__ == "__main__":
@@ -126,8 +128,11 @@ if __name__ == "__main__":
     b1 = tk.Button(root, text='Generate Image', command = lambda:show_result(canvas1))
     b1.pack()
     
+    i1 = tk.Entry(root)
+    i1.pack()
     canvas3.create_window(0,0, width=width//6, anchor=tk.NW, window=b) 
     canvas3.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b1) 
+    canvas3.create_window(0,40, width=30, anchor=tk.NW, window=i1) 
     canvas.pack(side='left')  
     canvas1.pack(side='right')  
     
