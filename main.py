@@ -125,8 +125,9 @@ if __name__ == "__main__":
     b.pack()
     b1 = tk.Button(root, text='Generate Image', command = lambda:show_result(canvas1))
     b1.pack()
-    canvas3.create_window(0,0, width=width//3, anchor=tk.NW, window=b) 
-    canvas3.create_window(0,25, width=width//3, anchor=tk.NW, window=b1) 
+    
+    canvas3.create_window(0,0, width=width//6, anchor=tk.NW, window=b) 
+    canvas3.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b1) 
     canvas.pack(side='left')  
     canvas1.pack(side='right')  
     
