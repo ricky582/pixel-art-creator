@@ -1,10 +1,11 @@
 import numpy as np
-from skimage import io, data
-import matplotlib.pyplot as plt 
+from skimage import io#, data
+#import matplotlib.pyplot as plt 
 import tkinter as tk
 from tkinter import filedialog
-from PIL import Image, ImageTk
+#from PIL import Image, ImageTk
 
+# Image uploaded by user
 chosenImg = None
 
 # extract_drawing()
@@ -62,16 +63,20 @@ def generate(img, step, cap=150, binary=False):
     out[binary and (out < 255).all(-1)] = 0
     return out
 
-def _photo_image(image, canvas):
-    height, width = image.shape[:2]
-    data = f'P6 {width} {height} 255 '.encode() + image.astype(np.int8).tobytes()
+# photo_image()
+#  takes a numpy image and converts to a tkinter PhotoImage
+#  img -> input image
+#  scalar -> new size of image in tkinter (should be the minimum of the width and height of canvas)
+def photo_image(img, scalar):
+    height, width = img.shape[:2]
+    # encode and create PhotoImage object
+    data = f'P6 {width} {height} 255 '.encode() + img.astype(np.int8).tobytes()
     img = tk.PhotoImage(width=width, height=height, data=data, format='PPM')
+    # get longest edge of image
     multi = max(height, width)
-    min_d = min(canvas.winfo_width(), canvas.winfo_height())
-    img = img.zoom(min_d//100)
+    # scale image (values//100 to stop memory errors)
+    img = img.zoom(scalar//100)
     img = img.subsample(multi//100)
-    
-    #canvas.create_image(20,20, anchor=tk.CENTER, image=img)   
     return img
 
 def upload_file(canvas):
@@ -79,7 +84,7 @@ def upload_file(canvas):
     filename = filedialog.askopenfilename(filetypes=ftypes)
     global chosenImg
     chosenImg = io.imread(filename)
-    i = _photo_image(chosenImg, canvas)
+    i = photo_image(chosenImg, canvas)
     c_width = canvas.winfo_width()
     canvas.create_image(c_width//2,c_width//2, anchor=tk.CENTER, image=i)   
     canvas.image = i
@@ -88,8 +93,9 @@ def upload_file(canvas):
 def show_result(canvas):
     res = 24 if i1.get() == "" else int(i1.get())
     if chosenImg is not None:
+        min_d = min(canvas.winfo_width(), canvas.winfo_height())
         out = generate(chosenImg, res)
-        i = _photo_image(out, canvas)
+        i = photo_image(out, min_d)
         c_width = canvas.winfo_width()
         c_height = canvas.winfo_height()
         canvas.create_image(c_width//2,c_height//2, anchor=tk.CENTER, image=i)   
@@ -128,11 +134,14 @@ if __name__ == "__main__":
     b1 = tk.Button(root, text='Generate Image', command = lambda:show_result(canvas1))
     b1.pack()
     
+    l1 = tk.Label(root, text="Block Size")
+    l1.pack()
     i1 = tk.Entry(root)
     i1.pack()
     canvas3.create_window(0,0, width=width//6, anchor=tk.NW, window=b) 
     canvas3.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b1) 
-    canvas3.create_window(0,40, width=30, anchor=tk.NW, window=i1) 
+    canvas3.create_window(0,40, anchor=tk.NW, window=l1) 
+    canvas3.create_window(l1.winfo_reqwidth(),40, width=30, anchor=tk.NW, window=i1) 
     canvas.pack(side='left')  
     canvas1.pack(side='right')  
     
