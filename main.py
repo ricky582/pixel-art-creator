@@ -91,6 +91,7 @@ def upload_file(canvas):
     return
 
 def show_result(canvas):
+    # default block size if input is empty
     res = 24 if i1.get() == "" else int(i1.get())
     if chosenImg is not None:
         min_d = min(canvas.winfo_width(), canvas.winfo_height())
@@ -109,9 +110,7 @@ if __name__ == "__main__":
     # create filtered image
     filtered = extract_drawing(img, determine_limit(empty, True))
     out = generate(filtered, 24)
-    # show new image
-    #io.imshow(out)
-    #plt.show()
+
     root = tk.Tk()  
     width= root.winfo_screenwidth()               
     height= root.winfo_screenheight()  
