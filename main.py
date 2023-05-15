@@ -80,11 +80,15 @@ def photo_image(img, scalar):
     return img
 
 def upload_file(canvas):
+    # accepted file types
     ftypes = [('Jpg Files', '*.jpg'), ('Jpeg Files', '*.jpeg'), ('Png Files', '*.png')]
+    # get file name from user and load with skimage
     filename = filedialog.askopenfilename(filetypes=ftypes)
     global chosenImg
     chosenImg = io.imread(filename)
+    # convert to PhotoImage
     i = photo_image(chosenImg, canvas)
+    # place image in centre of canvas(sizing done in photo_image)
     c_width = canvas.winfo_width()
     canvas.create_image(c_width//2,c_width//2, anchor=tk.CENTER, image=i)   
     canvas.image = i
@@ -94,11 +98,13 @@ def show_result(canvas):
     # default block size if input is empty
     res = 24 if i1.get() == "" else int(i1.get())
     if chosenImg is not None:
-        min_d = min(canvas.winfo_width(), canvas.winfo_height())
+        # convert image to pixel art
         out = generate(chosenImg, res)
+        c_width, c_height = canvas.winfo_width(), canvas.winfo_height()
+        # get min canvas edge for calculation
+        min_d = min(c_width, c_height)
         i = photo_image(out, min_d)
-        c_width = canvas.winfo_width()
-        c_height = canvas.winfo_height()
+        # display image
         canvas.create_image(c_width//2,c_height//2, anchor=tk.CENTER, image=i)   
         canvas.image = i
     return 
