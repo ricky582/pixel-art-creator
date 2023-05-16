@@ -79,6 +79,9 @@ def photo_image(img, scalar):
     img = img.subsample(multi//100)
     return img
 
+# upload_file()
+#  function for "Upload Image" button, gets a file name from user and displays on left of the screen
+#  canvas -> canvas to place the loaded image (original not pixel art version)
 def upload_file(canvas):
     # accepted file types
     ftypes = [('Jpg Files', '*.jpg'), ('Jpeg Files', '*.jpeg'), ('Png Files', '*.png')]
@@ -87,9 +90,9 @@ def upload_file(canvas):
     global chosenImg
     chosenImg = io.imread(filename)
     # convert to PhotoImage
-    i = photo_image(chosenImg, canvas)
-    # place image in centre of canvas(sizing done in photo_image)
     c_width = canvas.winfo_width()
+    i = photo_image(chosenImg, min(canvas.winfo_height(), c_width))
+    # place image in centre of canvas(sizing done in photo_image)
     canvas.create_image(c_width//2,c_width//2, anchor=tk.CENTER, image=i)   
     canvas.image = i
     return
@@ -128,12 +131,11 @@ if __name__ == "__main__":
     canvas1 = tk.Canvas(root, width=2*width//3, height=height, highlightthickness=0, bg="blue")  
     canvas2 = tk.Canvas(root, width=width//3, height=width//3, highlightthickness=0, bg="black")   
     canvas2.pack()
-    canvas3 = tk.Canvas(root, width=width//3, height=height-(width//3), highlightthickness=0, bg="yellow")   
-    canvas3.pack()
+    options_panel = tk.Canvas(root, width=width//3, height=height-(width//3), highlightthickness=0, bg="yellow")   
+    options_panel.pack()
     canvas.create_window(0,0, anchor=tk.NW, window=canvas2)   
-    canvas.create_window(0,width//3, anchor=tk.NW, window=canvas3)  
+    canvas.create_window(0,width//3, anchor=tk.NW, window=options_panel)  
      
-    #img = _photo_image(out, canvas)
     b = tk.Button(root, text='Upload File', command = lambda:[upload_file(canvas2)])
     b.pack()
     b1 = tk.Button(root, text='Generate Image', command = lambda:show_result(canvas1))
@@ -143,10 +145,12 @@ if __name__ == "__main__":
     l1.pack()
     i1 = tk.Entry(root)
     i1.pack()
-    canvas3.create_window(0,0, width=width//6, anchor=tk.NW, window=b) 
-    canvas3.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b1) 
-    canvas3.create_window(0,40, anchor=tk.NW, window=l1) 
-    canvas3.create_window(l1.winfo_reqwidth(),40, width=30, anchor=tk.NW, window=i1) 
+
+    # render options panel
+    options_panel.create_window(0,0, width=width//6, anchor=tk.NW, window=b) 
+    options_panel.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b1) 
+    options_panel.create_window(0,40, anchor=tk.NW, window=l1) 
+    options_panel.create_window(l1.winfo_reqwidth(),40, width=30, anchor=tk.NW, window=i1) 
     canvas.pack(side='left')  
     canvas1.pack(side='right')  
     
