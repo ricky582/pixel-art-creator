@@ -97,8 +97,11 @@ def upload_file(canvas):
     canvas.image = i
     return
 
+# show_result()
+#  once image has been uploaded, display it on chosen canvas (in centre, taking up whole canvas)
+#  canvas -> target canvas for generated image
 def show_result(canvas):
-    # default block size if input is empty
+    # default block size if input is empty, else take from input
     res = 24 if i1.get() == "" else int(i1.get())
     if chosenImg is not None:
         # convert image to pixel art
@@ -113,32 +116,34 @@ def show_result(canvas):
     return 
 
 if __name__ == "__main__":
-    # read image from file
-    img = io.imread("colour.jpg")
-    empty = io.imread("blank.jpg")
-    # create filtered image
-    filtered = extract_drawing(img, determine_limit(empty, True))
-    out = generate(filtered, 24)
+    # old code but still to be implemented in UI:
 
+    # read image from file
+    #img = io.imread("colour.jpg")
+    #empty = io.imread("blank.jpg")
+    # create filtered image
+    #filtered = extract_drawing(img, determine_limit(empty, True))
+    #out = generate(filtered, 24)
+
+    # create tkinter window
     root = tk.Tk()  
-    width= root.winfo_screenwidth()               
-    height= root.winfo_screenheight()  
+    # fullscreen windowed
     root.state("zoomed")
-    #root.geometry("%dx%d" % (width, height))
-    c_width = 2*width//3
-    c_height = c_width//2
-    canvas = tk.Canvas(root, width=width//3, height=height, highlightthickness=0, bg="red")   
-    canvas1 = tk.Canvas(root, width=2*width//3, height=height, highlightthickness=0, bg="blue")  
-    canvas2 = tk.Canvas(root, width=width//3, height=width//3, highlightthickness=0, bg="black")   
-    canvas2.pack()
-    options_panel = tk.Canvas(root, width=width//3, height=height-(width//3), highlightthickness=0, bg="yellow")   
-    options_panel.pack()
-    canvas.create_window(0,0, anchor=tk.NW, window=canvas2)   
-    canvas.create_window(0,width//3, anchor=tk.NW, window=options_panel)  
+
+    width, height = root.winfo_screenwidth(), root.winfo_screenheight()        
+
+    c_left = tk.Canvas(root, width=width//3, height=height, highlightthickness=0, bg="red")   
+    c_right = tk.Canvas(root, width=2*width//3, height=height, highlightthickness=0, bg="blue")  
+    c_in = tk.Canvas(root, width=width//3, height=width//3, highlightthickness=0, bg="black")   
+    c_in.pack()
+    c_options = tk.Canvas(root, width=width//3, height=height-(width//3), highlightthickness=0, bg="yellow")   
+    c_options.pack()
+    c_left.create_window(0,0, anchor=tk.NW, window=c_in)   
+    c_left.create_window(0,width//3, anchor=tk.NW, window=c_options)  
      
-    b = tk.Button(root, text='Upload File', command = lambda:[upload_file(canvas2)])
+    b = tk.Button(root, text='Upload File', command = lambda:[upload_file(c_in)])
     b.pack()
-    b1 = tk.Button(root, text='Generate Image', command = lambda:show_result(canvas1))
+    b1 = tk.Button(root, text='Generate Image', command = lambda:show_result(c_right))
     b1.pack()
     
     l1 = tk.Label(root, text="Block Size")
@@ -147,12 +152,12 @@ if __name__ == "__main__":
     i1.pack()
 
     # render options panel
-    options_panel.create_window(0,0, width=width//6, anchor=tk.NW, window=b) 
-    options_panel.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b1) 
-    options_panel.create_window(0,40, anchor=tk.NW, window=l1) 
-    options_panel.create_window(l1.winfo_reqwidth(),40, width=30, anchor=tk.NW, window=i1) 
-    canvas.pack(side='left')  
-    canvas1.pack(side='right')  
+    c_options.create_window(0,0, width=width//6, anchor=tk.NW, window=b) 
+    c_options.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b1) 
+    c_options.create_window(0,40, anchor=tk.NW, window=l1) 
+    c_options.create_window(l1.winfo_reqwidth(),40, width=30, anchor=tk.NW, window=i1) 
+    c_left.pack(side='left')  
+    c_right.pack(side='right')  
     
     
     
