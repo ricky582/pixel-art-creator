@@ -40,7 +40,7 @@ def determine_limit(img, lined=False):
 #  step -> width of "pixels"
 #  cap -> if the average value of all the RBG channels is above cap, they will be made fully white to avoid noise
 #  binary -> if true, all pixels will either be made black (0,0,0) or white (255,255,255) based on cap
-def generate(img, step, cap=150, binary=False):
+def generate(img, step, cap=255, binary=False):
     # get width and height of image
     h, b, _ = img.shape
     # trim off excess pixels to get an empty image of (h/step) by (b/step)
@@ -101,9 +101,10 @@ def upload_file(canvas):
 def show_result(canvas):
     # default block size if input is empty, else take from input
     res = 24 if i1.get() == "" else int(i1.get())
+    cap = 255 if i2.get() == "" else int(i2.get())
     if chosenImg is not None:
         # convert image to pixel art
-        out = generate(chosenImg, res)
+        out = generate(chosenImg, res, cap)
         c_width, c_height = canvas.winfo_width(), canvas.winfo_height()
         # get min canvas edge for calculation
         min_d = min(c_width, c_height)
@@ -128,34 +129,45 @@ if __name__ == "__main__":
     # fullscreen windowed
     root.state("zoomed")
 
+    # get dimensions of screen for calculations
     width, height = root.winfo_screenwidth(), root.winfo_screenheight()        
 
+    # create large canvases on each side of screen to mount content
     c_left = tk.Canvas(root, width=width//3, height=height, highlightthickness=0, bg="red")   
     c_right = tk.Canvas(root, width=2*width//3, height=height, highlightthickness=0, bg="blue")  
     c_left.pack(side='left')  
     c_right.pack(side='right')  
+
+    # create smaller canvases on left canvas to mount more content
     c_in = tk.Canvas(root, width=width//3, height=width//3, highlightthickness=0, bg="black")   
     c_in.pack()
     c_options = tk.Canvas(root, width=width//3, height=height-(width//3), highlightthickness=0, bg="yellow")   
     c_options.pack()
     c_left.create_window(0,0, anchor=tk.NW, window=c_in)   
     c_left.create_window(0,width//3, anchor=tk.NW, window=c_options)  
-     
+
     b = tk.Button(root, text='Upload File', command = lambda:[upload_file(c_in)])
     b.pack()
     b1 = tk.Button(root, text='Generate Image', command = lambda:show_result(c_right))
     b1.pack()
     
-    l1 = tk.Label(root, text="Block Size")
+    l1 = tk.Label(root, text="Block Size: ")
     l1.pack()
     i1 = tk.Entry(root)
     i1.pack()
+
+    l2 = tk.Label(root, text="Cap: ")
+    l2.pack()
+    i2 = tk.Entry(root)
+    i2.pack()
 
     # render options panel
     c_options.create_window(0,0, width=width//6, anchor=tk.NW, window=b) 
     c_options.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b1) 
     c_options.create_window(0,40, anchor=tk.NW, window=l1) 
     c_options.create_window(l1.winfo_reqwidth(),40, width=30, anchor=tk.NW, window=i1) 
+    c_options.create_window(0,60, anchor=tk.NW, window=l2) 
+    c_options.create_window(l2.winfo_reqwidth(),60, width=30, anchor=tk.NW, window=i2) 
     
     
     
