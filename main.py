@@ -100,15 +100,15 @@ def upload_file(canvas):
 #  canvas -> target canvas for generated image
 def show_result(canvas):
     # default block size if input is empty, else take from input
-    res = 24 if i1.get() == "" else int(i1.get())
-    cap = 255 if i2.get() == "" else int(i2.get())
+    res = 24 if i_bsize.get() == "" else int(i_bsize.get())
+    cap = 255 if i_cap.get() == "" else int(i_cap.get())
     if chosenImg is not None:
         # convert image to pixel art
-        out = generate(chosenImg, res, cap)
+        out = generate(chosenImg, res, cap, binary.get())
         c_width, c_height = canvas.winfo_width(), canvas.winfo_height()
-        # get min canvas edge for calculation
-        min_d = min(c_width, c_height)
-        i = photo_image(out, min_d)
+        # get canvas edge for calculation
+        scalar = max(c_width, c_height)
+        i = photo_image(out, scalar)
         # display image
         canvas.create_image(c_width//2,c_height//2, anchor=tk.CENTER, image=i)   
         canvas.image = i
@@ -146,30 +146,37 @@ if __name__ == "__main__":
     c_left.create_window(0,0, anchor=tk.NW, window=c_in)   
     c_left.create_window(0,width//3, anchor=tk.NW, window=c_options)  
 
-    b = tk.Button(root, text='Upload File', command = lambda:[upload_file(c_in)])
-    b.pack()
-    b1 = tk.Button(root, text='Generate Image', command = lambda:show_result(c_right))
-    b1.pack()
+    # upload and generate button for image input
+    b_upload = tk.Button(root, text='Upload File', command = lambda:[upload_file(c_in)])
+    b_upload.pack()
+    b_generate = tk.Button(root, text='Generate Image', command = lambda:show_result(c_right))
+    b_generate.pack()
     
-    l1 = tk.Label(root, text="Block Size: ")
-    l1.pack()
-    i1 = tk.Entry(root)
-    i1.pack()
+    # block size input
+    l_bsize = tk.Label(root, text="Block Size: ")
+    l_bsize.pack()
+    i_bsize = tk.Entry(root)
+    i_bsize.pack()
 
-    l2 = tk.Label(root, text="Cap: ")
-    l2.pack()
-    i2 = tk.Entry(root)
-    i2.pack()
+    # cap input
+    l_cap = tk.Label(root, text="Cap: ")
+    l_cap.pack()
+    i_cap = tk.Entry(root)
+    i_cap.pack()
+
+    # Checkbox input from user
+    binary = tk.BooleanVar()
+
+    c1 = tk.Checkbutton(root, text='Binary: ',variable=binary, onvalue=True, offvalue=False)
+    c1.pack()
 
     # render options panel
-    c_options.create_window(0,0, width=width//6, anchor=tk.NW, window=b) 
-    c_options.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b1) 
-    c_options.create_window(0,40, anchor=tk.NW, window=l1) 
-    c_options.create_window(l1.winfo_reqwidth(),40, width=30, anchor=tk.NW, window=i1) 
-    c_options.create_window(0,60, anchor=tk.NW, window=l2) 
-    c_options.create_window(l2.winfo_reqwidth(),60, width=30, anchor=tk.NW, window=i2) 
-    
-    
-    
+    c_options.create_window(0,0, width=width//6, anchor=tk.NW, window=b_upload) 
+    c_options.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b_generate) 
+    c_options.create_window(0,40, anchor=tk.NW, window=l_bsize) 
+    c_options.create_window(l_bsize.winfo_reqwidth(),40, width=30, anchor=tk.NW, window=i_bsize) 
+    c_options.create_window(0,60, anchor=tk.NW, window=l_cap) 
+    c_options.create_window(l_cap.winfo_reqwidth(),60, width=30, anchor=tk.NW, window=i_cap) 
+    c_options.create_window(l_cap.winfo_reqwidth()+i_cap.winfo_reqwidth(),60,  anchor=tk.NW, window=c1) 
     
     tk.mainloop()  
