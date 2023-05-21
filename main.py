@@ -167,8 +167,8 @@ if __name__ == "__main__":
     # Checkbox input from user
     binary = tk.BooleanVar()
 
-    c1 = tk.Checkbutton(root, text='Binary: ',variable=binary, onvalue=True, offvalue=False)
-    c1.pack()
+    ch_binary = tk.Checkbutton(root, text='Binary: ',variable=binary, onvalue=True, offvalue=False)
+    ch_binary.pack()
 
     # render options panel
     c_options.create_window(0,0, width=width//6, anchor=tk.NW, window=b_upload) 
@@ -177,6 +177,6 @@ if __name__ == "__main__":
     c_options.create_window(l_bsize.winfo_reqwidth(),40, width=30, anchor=tk.NW, window=i_bsize) 
     c_options.create_window(0,60, anchor=tk.NW, window=l_cap) 
     c_options.create_window(l_cap.winfo_reqwidth(),60, width=30, anchor=tk.NW, window=i_cap) 
-    c_options.create_window(l_cap.winfo_reqwidth()+i_cap.winfo_reqwidth(),60,  anchor=tk.NW, window=c1) 
+    c_options.create_window(l_cap.winfo_reqwidth()+i_cap.winfo_reqwidth(),60,  anchor=tk.NW, window=ch_binary) 
     
     tk.mainloop()  
