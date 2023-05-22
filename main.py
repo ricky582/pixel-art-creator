@@ -116,13 +116,8 @@ def show_result(canvas):
 
 if __name__ == "__main__":
     # old code but still to be implemented in UI:
-
-    # read image from file
-    #img = io.imread("colour.jpg")
     #empty = io.imread("blank.jpg")
-    # create filtered image
     #filtered = extract_drawing(img, determine_limit(empty, True))
-    #out = generate(filtered, 24)
 
     # create tkinter window
     root = tk.Tk()  
