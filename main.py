@@ -129,6 +129,7 @@ if __name__ == "__main__":
     # fullscreen windowed
     root.state("zoomed")
 
+    
     # get dimensions of screen for calculations
     width, height = root.winfo_screenwidth(), root.winfo_screenheight()        
 
@@ -151,6 +152,11 @@ if __name__ == "__main__":
     b_upload.pack()
     b_generate = tk.Button(root, text='Generate Image', command = lambda:show_result(c_right))
     b_generate.pack()
+
+    b_settings = tk.Button(root, text='Settings', command = lambda:[upload_file(c_in)])
+    b_settings.pack()
+    b_save = tk.Button(root, text='Save Config', command = lambda:show_result(c_right))
+    b_save.pack()
     
     # block size input
     l_bsize = tk.Label(root, text="Block Size: ")
@@ -175,7 +181,7 @@ if __name__ == "__main__":
 
     ch_binary = tk.Checkbutton(root, text='Binary: ',variable=binary, onvalue=True, offvalue=False)
     ch_binary.pack()
-
+    print(c_options.winfo_reqheight())
     # render options panel
     c_options.create_window(0,0, width=width//6, anchor=tk.NW, window=b_upload) 
     c_options.create_window(width//6,0, width=width//6, anchor=tk.NW, window=b_generate) 
@@ -186,5 +192,7 @@ if __name__ == "__main__":
     c_options.create_window(0,80, anchor=tk.NW, window=l_pal) 
     c_options.create_window(l_pal.winfo_reqwidth(),80, width=30, anchor=tk.NW, window=i_pal) 
     c_options.create_window(l_cap.winfo_reqwidth()+i_cap.winfo_reqwidth(),60,  anchor=tk.NW, window=ch_binary) 
+    c_options.create_window(0,380, width=width//6, anchor=tk.SW, window=b_settings) 
+    c_options.create_window(width//6,380, width=width//6, anchor=tk.SW, window=b_save) 
     
     tk.mainloop()  
