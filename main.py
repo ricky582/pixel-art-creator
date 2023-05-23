@@ -40,7 +40,8 @@ def determine_limit(img, lined=False):
 #  step -> width of "pixels"
 #  cap -> if the average value of all the RBG channels is above cap, they will be made fully white to avoid noise
 #  binary -> if true, all pixels will either be made black (0,0,0) or white (255,255,255) based on cap
-def generate(img, step, cap=255, binary=False, pal_step=60):
+#  pal_step ->
+def generate(img, step, cap=255, binary=False, pal_step=1):
     # get width and height of image
     h, b, _ = img.shape
     # trim off excess pixels to get an empty image of (h/step) by (b/step)
@@ -60,6 +61,7 @@ def generate(img, step, cap=255, binary=False, pal_step=60):
     # make all remaining pixels black (0,0,0) 
     out[binary and (out < 255).all(-1)] = 0
 
+    # restrict colour palette of image
     out = (out//pal_step)*pal_step
     return out
 
@@ -104,9 +106,10 @@ def show_result(canvas):
     # default block size if input is empty, else take from input
     res = 24 if i_bsize.get() == "" else int(i_bsize.get())
     cap = 255 if i_cap.get() == "" else int(i_cap.get())
+    p_step = 1 if i_pal.get() == "" else int(i_pal.get())
     if chosenImg is not None:
         # convert image to pixel art
-        out = generate(chosenImg, res, cap, binary.get())
+        out = generate(chosenImg, res, cap, binary.get(), p_step)
         c_width, c_height = canvas.winfo_width(), canvas.winfo_height()
         # get canvas edge for calculation
         scalar = max(c_width, c_height)
