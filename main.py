@@ -40,7 +40,7 @@ def determine_limit(img, lined=False):
 #  step -> width of "pixels"
 #  cap -> if the average value of all the RBG channels is above cap, they will be made fully white to avoid noise
 #  binary -> if true, all pixels will either be made black (0,0,0) or white (255,255,255) based on cap
-def generate(img, step, cap=255, binary=False):
+def generate(img, step, cap=255, binary=False, pal_step=60):
     # get width and height of image
     h, b, _ = img.shape
     # trim off excess pixels to get an empty image of (h/step) by (b/step)
@@ -59,6 +59,8 @@ def generate(img, step, cap=255, binary=False):
     out[(out > cap).any(-1)] = 255
     # make all remaining pixels black (0,0,0) 
     out[binary and (out < 255).all(-1)] = 0
+
+    out = (out//pal_step)*pal_step
     return out
 
 # photo_image()
