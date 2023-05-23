@@ -161,6 +161,12 @@ if __name__ == "__main__":
     i_cap = tk.Entry(root)
     i_cap.pack()
 
+    # palette restriction input
+    l_pal = tk.Label(root, text="Palette Restriction: ")
+    l_pal.pack()
+    i_pal = tk.Entry(root)
+    i_pal.pack()
+
     # Checkbox input from user
     binary = tk.BooleanVar()
 
@@ -174,6 +180,8 @@ if __name__ == "__main__":
     c_options.create_window(l_bsize.winfo_reqwidth(),40, width=30, anchor=tk.NW, window=i_bsize) 
     c_options.create_window(0,60, anchor=tk.NW, window=l_cap) 
     c_options.create_window(l_cap.winfo_reqwidth(),60, width=30, anchor=tk.NW, window=i_cap) 
+    c_options.create_window(0,80, anchor=tk.NW, window=l_pal) 
+    c_options.create_window(l_pal.winfo_reqwidth(),80, width=30, anchor=tk.NW, window=i_pal) 
     c_options.create_window(l_cap.winfo_reqwidth()+i_cap.winfo_reqwidth(),60,  anchor=tk.NW, window=ch_binary) 
     
     tk.mainloop()  
